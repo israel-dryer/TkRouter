@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tkrouter"
 version = "0.1.1"
-description = "Declarative routing and transitions for Tkinter apps"
+description = "Declarative routing and animated navigation for Tkinter."
 authors = [{ name = "Israel Dryer", email = "israel.dryer@gmail.com" }]
 license = "MIT"
 readme = "README.md"

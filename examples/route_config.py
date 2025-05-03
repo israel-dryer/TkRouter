@@ -1,4 +1,5 @@
-from examples.views import UserProfilePage, ProfileDetailsPage, HomePage, AboutPage, LoginPage, NotFoundPage, SettingsPage, ProfilePage, AccountPage
+from examples.views import UserProfilePage, ProfileDetailsPage, HomePage, AboutPage, LoginPage, NotFoundPage, \
+    SettingsPage, ProfilePage, AccountPage, SearchPage
 from tkrouter.transitions import slide_transition, simple_fade_transition
 
 ROUTES = {
@@ -11,6 +12,7 @@ ROUTES = {
         "view": LoginPage,
         "transition": simple_fade_transition
     },
+    "/search": SearchPage,
     "/settings": {
         "view": SettingsPage,
         "children": {

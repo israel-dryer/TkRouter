@@ -10,6 +10,18 @@ class HomePage(tk.Frame):
         RouteLinkButton(self, master.router, "/about", text="Go to About").pack()
         RouteLinkButton(self, master.router, "/nonexistent", text="Invalid Route").pack()
         RouteLinkButton(self, master.router, "/user/123", text="Go to User 123").pack()
+        RouteLinkButton(self, master.router, "/search?term=tkrouter&page=2", text="Search tkrouter (Page 2)").pack()
+
+class SearchPage(tk.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.label = tk.Label(self)
+        self.label.pack()
+
+    def on_navigate(self, params):
+        term = params.get("term", "(no term)")
+        page = params.get("page", "1")
+        self.label.config(text=f"Search: '{term}', Page: {page}")
 
 class UserProfilePage(tk.Frame):
     def __init__(self, master):

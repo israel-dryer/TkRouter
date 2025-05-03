@@ -1,4 +1,5 @@
 import re
+from urllib.parse import parse_qs
 from .history import History
 
 
@@ -10,6 +11,10 @@ class Router:
         self.history = History()
 
     def navigate(self, path, transition=None):
+        url, _, query = path.partition("?")
+        path = url
+        query_params = {k: v[0] for k, v in parse_qs(query).items()} if query else {}
+
         match, params, view_class, route_config = self._resolve_route(path)
         if view_class is None:
             raise ValueError(f"Route not found for path: {path}")
@@ -23,13 +28,14 @@ class Router:
                 return
 
         handler = transition or route_config.get("transition") or self.transition_handler
+        params.update(query_params)
 
         try:
             if handler:
                 handler(self.outlet, view_class, params)
             else:
                 self.outlet.set_view(view_class, params)
-            self.history.push(path)
+            self.history.push(path + ("?" + query if query else ""))
         except Exception as e:
             print(f"[TkRouter] Error navigating to '{path}': {e}")
 

@@ -193,3 +193,30 @@ class UserProfilePage(tk.Frame):
         user_id = params.get("id", "unknown")
         self.label.config(text=f"User ID: {user_id}")
 ```
+
+## ❓ Query Parameters
+
+TkRouter supports parsing query parameters (e.g., `?key=value`) from the URL path.
+
+```python
+ROUTES = {
+    "/search": SearchPage
+}
+```
+
+Navigate to:
+
+```python
+/search?term=tkrouter&page=2
+```
+
+In your view:
+
+```python
+class SearchPage(tk.Frame):
+    def on_navigate(self, params):
+        term = params.get("term")  # "tkrouter"
+        page = params.get("page")  # "2"
+```
+
+Query params are merged with route parameters and passed into `on_navigate(params)` automatically.
