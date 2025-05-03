@@ -1,11 +1,27 @@
-from examples.views import HomePage, AboutPage, NotFoundPage
-from src.tkrouter.transitions import slide_transition
+from examples.views import ProfileDetailsPage, HomePage, AboutPage, LoginPage, NotFoundPage, SettingsPage, ProfilePage, AccountPage
+from tkrouter.transitions import slide_transition, simple_fade_transition
 
 ROUTES = {
-    "/": HomePage,  # simple format
-    "/about": {     # extended format
+    "/": HomePage,
+    "/about": {
         "view": AboutPage,
         "transition": slide_transition
+    },
+    "/login": {
+        "view": LoginPage,
+        "transition": simple_fade_transition
+    },
+    "/settings": {
+        "view": SettingsPage,
+        "children": {
+            "/profile": {
+                "view": ProfilePage,
+                "children": {
+                    "/details": ProfileDetailsPage
+                }
+            },
+            "/account": AccountPage
+        }
     },
     "*": NotFoundPage
 }

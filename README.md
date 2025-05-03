@@ -1,16 +1,14 @@
+> 🚧 **This project is in active development. Expect frequent changes and breaking updates.**
+>
 # TkRouter
-
-🚧 This project is in active development. Expect frequent changes and breaking updates.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/)
+[![PyPI](https://img.shields.io/pypi/v/tkrouter.svg)](https://pypi.org/project/tkrouter/)
 
 **TkRouter** brings declarative, animated routing to Tkinter, inspired by React Router and Angular Router.
 
 
-**TkRouter** is a lightweight, declarative routing and navigation library for Python's Tkinter framework—designed to bring the power of React Router and Angular Router into desktop GUI development.
-
----
 
 ## ✨ Features
 
@@ -27,7 +25,13 @@
 
 ## 📦 Installation
 
-`pip install tkrouter`
+Install TkRouter from PyPI:
+
+```bash
+pip install tkrouter
+```
+
+---
 
 ## 📚 Requirements
 
@@ -78,10 +82,10 @@ from tkrouter.transitions import slide_transition, simple_fade_transition
 
 ## 📂 Example Project Structure
 
-This is what a project might look like when using TkRouter:
+This is what an end-user project might look like when using TkRouter:
 
 ```
-example_app/
+examples/
 ├── views.py             # Page components (HomePage, AboutPage, etc.)
 ├── route_config.py      # All route declarations
 └── basic_app.py         # Main application entry point
@@ -95,7 +99,16 @@ example_app/
 pytest tests/
 ```
 
+
 ---
+
+## 🧪 Try It Locally
+
+```bash
+git clone https://github.com/israel-dryer/tkrouter.git
+cd tkrouter/examples
+python basic_app.py
+```
 
 ## 📄 License
 
@@ -117,3 +130,41 @@ MIT License
 | Home Page         | About Page        | 404 Fallback       |
 |-------------------|-------------------|--------------------|
 | ![Home](docs/home.png) | ![About](docs/about.png) | ![404](docs/404.png) |
+
+
+## 🌲 Nested Routing
+
+TkRouter supports nested routes via the `children` property.
+
+Use `ChildRouteView` in your parent view to render the active child:
+
+```python
+ROUTES = {
+    "/settings": {
+        "view": SettingsPage,
+        "children": {
+            "/profile": {
+                "view": ProfilePage,
+                "children": {
+                    "/details": ProfileDetailsPage
+                }
+            },
+            "/account": AccountPage
+        }
+    }
+}
+```
+
+In `SettingsPage`:
+
+```python
+self.child_view = ChildRouteView(self, master.router, "/settings")
+self.child_view.pack(fill="both", expand=True)
+```
+
+In `ProfilePage` (to render `/settings/profile/details`):
+
+```python
+self.child_view = ChildRouteView(self, master.router, "/settings/profile")
+self.child_view.pack(fill="both", expand=True)
+```
