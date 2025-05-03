@@ -1,4 +1,5 @@
 import re
+from .history import History
 
 
 class Router:
@@ -6,8 +7,7 @@ class Router:
         self.routes = routes
         self.outlet = outlet
         self.transition_handler = transition_handler
-        self.history = []
-        self.current_index = -1
+        self.history = History()
 
     def navigate(self, path, transition=None):
         match, params, view_class, route_config = self._resolve_route(path)
@@ -24,22 +24,29 @@ class Router:
 
         handler = transition or route_config.get("transition") or self.transition_handler
 
-        if handler:
-            handler(self.outlet, view_class, params)
-        else:
-            self.outlet.set_view(view_class, params)
-
-        self._update_history(path)
-
-    def _update_history(self, path):
-        self.history = self.history[:self.current_index + 1]
-        self.history.append(path)
-        self.current_index += 1
+        try:
+            if handler:
+                handler(self.outlet, view_class, params)
+            else:
+                self.outlet.set_view(view_class, params)
+            self.history.push(path)
+        except Exception as e:
+            print(f"[TkRouter] Error navigating to '{path}': {e}")
 
     def back(self):
-        if self.current_index > 0:
-            self.current_index -= 1
-            self.navigate(self.history[self.current_index])
+        path = self.history.back()
+        if path:
+            self.navigate(path)
+
+    def forward(self):
+        path = self.history.forward()
+        if path:
+            self.navigate(path)
+
+    def go(self, delta):
+        path = self.history.go(delta)
+        if path:
+            self.navigate(path)
 
     def _resolve_route(self, path):
         def search(route_tree, base=""):
