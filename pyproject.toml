@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tkrouter"
+version = "0.1.0"
+description = "Declarative routing and navigation for Tkinter apps"
+authors = [{ name="Israel Dryer", email="israel.dryer@gmail.com" }]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = []
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
