@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tkrouter"
-version = "0.1.0"
-description = "Declarative routing and navigation for Tkinter apps"
-authors = [{ name="Israel Dryer", email="israel.dryer@gmail.com" }]
+version = "0.1.1"
+description = "Declarative routing and transitions for Tkinter apps"
+authors = [{ name = "Israel Dryer", email = "israel.dryer@gmail.com" }]
 license = "MIT"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -17,3 +17,8 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[project.urls]
+"Homepage" = "https://github.com/israel-dryer/tkrouter"
+"Source" = "https://github.com/israel-dryer/tkrouter"
+"Bug Tracker" = "https://github.com/israel-dryer/tkrouter/issues"

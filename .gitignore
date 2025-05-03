@@ -52,3 +52,5 @@ Thumbs.db
 
 # TkRouter-specific
 tkrouter.egg-info/
+
+publish.bat
