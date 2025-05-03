@@ -168,3 +168,28 @@ In `ProfilePage` (to render `/settings/profile/details`):
 self.child_view = ChildRouteView(self, master.router, "/settings/profile")
 self.child_view.pack(fill="both", expand=True)
 ```
+
+
+## 🔣 Route Parameters
+
+TkRouter supports dynamic route segments using angle brackets:
+
+```python
+ROUTES = {
+    "/user/<id>": UserProfilePage
+}
+```
+
+In your view, define an `on_navigate()` method to access parameters:
+
+```python
+class UserProfilePage(tk.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.label = tk.Label(self)
+        self.label.pack()
+
+    def on_navigate(self, params):
+        user_id = params.get("id", "unknown")
+        self.label.config(text=f"User ID: {user_id}")
+```

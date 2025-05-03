@@ -8,9 +8,18 @@ class HomePage(tk.Frame):
         super().__init__(master)
         tk.Label(self, text="Home Page").pack()
         RouteLinkButton(self, master.router, "/about", text="Go to About").pack()
-        RouteLinkButton(self, master.router, "/settings", text="Settings").pack()
         RouteLinkButton(self, master.router, "/nonexistent", text="Invalid Route").pack()
+        RouteLinkButton(self, master.router, "/user/123", text="Go to User 123").pack()
 
+class UserProfilePage(tk.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.label = tk.Label(self)
+        self.label.pack()
+
+    def on_navigate(self, params):
+        user_id = params.get("id", "unknown")
+        self.label.config(text=f"User ID: {user_id}")
 
 class AboutPage(tk.Frame):
     def __init__(self, master):

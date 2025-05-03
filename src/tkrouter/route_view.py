@@ -1,19 +1,16 @@
 import tkinter as tk
 
 class RouteView(tk.Frame):
-    def __init__(self, master=None, **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, master):
+        super().__init__(master)
         self.current_view = None
+        self.router = None
+        self.pack(fill="both", expand=True)
 
-    def set_view(self, view_class, params):
+    def set_view(self, view_class, params=None):
         if self.current_view:
-            if hasattr(self.current_view, 'on_leave'):
-                self.current_view.on_leave()
             self.current_view.destroy()
-
         self.current_view = view_class(self)
-
-        if hasattr(self.current_view, 'on_enter'):
-            self.current_view.on_enter(params)
-
         self.current_view.pack(fill="both", expand=True)
+        if hasattr(self.current_view, "on_navigate"):
+            self.current_view.on_navigate(params or {})

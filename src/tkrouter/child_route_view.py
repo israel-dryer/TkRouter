@@ -1,6 +1,5 @@
 import tkinter as tk
 
-
 class ChildRouteView(tk.Frame):
     def __init__(self, master, router, base_path):
         super().__init__(master)
