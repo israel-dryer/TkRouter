@@ -1,5 +1,7 @@
 # TkRouter
 
+🚧 This project is in active development. Expect frequent changes and breaking updates.
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/)
 
