@@ -1,7 +1,8 @@
 import re
-from urllib.parse import parse_qs
+from .utils import strip_query, extract_query_params, normalize_route_config
 from .history import History
 from .exceptions import RouteNotFoundError, NavigationGuardError
+
 
 class Router:
     def __init__(self, routes, outlet, transition_handler=None):
@@ -12,9 +13,8 @@ class Router:
         self._listeners = []
 
     def navigate(self, path, transition=None):
-        url, _, query = path.partition("?")
-        path = url
-        query_params = {k: v[0] for k, v in parse_qs(query).items()} if query else {}
+        query_params = extract_query_params(path)
+        path = strip_query(path)
 
         match, params, view_class, route_config = self._resolve_route(path)
         if view_class is None:
@@ -36,7 +36,9 @@ class Router:
                 handler(self.outlet, view_class, params)
             else:
                 self.outlet.set_view(view_class, params)
-            self.history.push(path + ("?" + query if query else ""))
+            query_string = "&".join(f"{k}={v}" for k, v in query_params.items())
+            full_path = path + ("?" + query_string if query_string else "")
+            self.history.push(full_path)
             self._notify_listeners(path, params)
         except Exception as e:
             print(f"[TkRouter] Error navigating to '{path}': {e}")
@@ -74,7 +76,7 @@ class Router:
                         view_class = config.get("view")
                         return pattern, params, view_class, config
                     else:
-                        return pattern, params, config, {"view": config}
+                        return pattern, params, config, normalize_route_config(config)
 
                 if isinstance(config, dict) and "children" in config:
                     result = search(config["children"], base + pattern)
@@ -82,7 +84,7 @@ class Router:
                         return result
 
             if fallback:
-                return "*", {}, fallback, {"view": fallback} if not isinstance(fallback, dict) else fallback
+                return "*", {}, fallback, normalize_route_config(fallback)
             return None, {}, None, None
 
         return search(self.routes)

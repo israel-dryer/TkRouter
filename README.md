@@ -141,8 +141,6 @@ self.child_view.pack(fill="both", expand=True)
 
 ---
 
-
-
 ## 🔗 Navigation Widgets
 
 TkRouter includes reusable helpers and widgets to simplify routing in your app.
