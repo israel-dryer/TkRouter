@@ -142,6 +142,7 @@ self.child_view.pack(fill="both", expand=True)
 ---
 
 
+
 ## 🔗 Navigation Widgets
 
 TkRouter includes reusable helpers and widgets to simplify routing in your app.
@@ -149,32 +150,33 @@ TkRouter includes reusable helpers and widgets to simplify routing in your app.
 ### `RouteLinkButton`
 
 ```python
-RouteLinkButton(self, router, "/about", text="Go to About")
+RouteLinkButton(self, router, "/user/<id>", params={"id": 42}, text="Go to User 42")
 ```
 
-### `with_route()` - Decorator for Commands
+### `with_route()` - Decorator or Inline Command
+
+Use as a decorator:
 
 ```python
-@with_route("/login")
-def go_to_login():
+@with_route(router, "/login")
+def login_handler():
     ...
 ```
 
-Attach this to any `command=` on a button:
+Or attach as a button command with dynamic params:
 
 ```python
-btn = tk.Button(self, text="Login", command=with_route("/login"))
+tk.Button(self, text="Go", command=with_route(router, "/search", params={"term": "python"}))
 ```
 
-### `bind_route()` - Attach to Events
+### `bind_route()` - Attach to Any Widget
 
 ```python
-label = tk.Label(self, text="Click to go to Home")
-bind_route(label, "/")
+label = tk.Label(self, text="Go to Home")
+bind_route(label, router, "/", params={"from": "label"})
 ```
 
-This allows any widget to act as a navigation trigger.
-
+This allows any widget to act as a navigation trigger with optional parameters.
 
 ## 🧭 Route Observers
 
