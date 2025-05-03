@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkrouter.link_widgets import RouteLinkButton
+from tkrouter.widgets import RouteLinkButton
 from tkrouter.child_route_view import ChildRouteView
 
 

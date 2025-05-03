@@ -1,7 +1,7 @@
 import re
 from urllib.parse import parse_qs
 from .history import History
-
+from .exceptions import RouteNotFoundError, NavigationGuardError
 
 class Router:
     def __init__(self, routes, outlet, transition_handler=None):
@@ -18,7 +18,7 @@ class Router:
 
         match, params, view_class, route_config = self._resolve_route(path)
         if view_class is None:
-            raise ValueError(f"Route not found for path: {path}")
+            raise RouteNotFoundError(f"Route not found for path: {path}")
 
         if isinstance(route_config, dict):
             guard = route_config.get("guard")
@@ -26,7 +26,7 @@ class Router:
             if guard and not guard():
                 if redirect_path:
                     return self.navigate(redirect_path)
-                return
+                raise NavigationGuardError(f"Access denied to path: {path}")
 
         handler = transition or route_config.get("transition") or self.transition_handler
         params.update(query_params)

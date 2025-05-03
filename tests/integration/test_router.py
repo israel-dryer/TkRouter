@@ -1,6 +1,8 @@
 import pytest
 import tkinter as tk
 
+from tkrouter.exceptions import RouteNotFoundError
+
 try:
     root_test = tk.Tk()
     root_test.destroy()
@@ -45,6 +47,6 @@ def test_route_not_found():
     outlet = RouteView(root)
     routes = {"/": DummyPage}
     router = Router(routes=routes, outlet=outlet)
-    with pytest.raises(ValueError):
+    with pytest.raises(RouteNotFoundError):
         router.navigate("/missing")
     root.destroy()
