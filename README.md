@@ -8,7 +8,7 @@
 
 **TkRouter** brings declarative, animated routing to Tkinter, inspired by React Router and Angular Router.
 
-
+---
 
 ## ✨ Features
 
@@ -16,16 +16,15 @@
 - 🔁 Supports route transitions (slide, fade, etc.)
 - 🛡️ Route guards and redirection
 - 📦 Nested routes and 404 fallback handling
-- 📜 URL parameter parsing (`/user/<id>`)
+- 📜 URL and query parameter parsing (`/user/<id>?sort=asc`)
 - 🧠 History stack (back/forward navigation)
 - 🔗 Reusable navigation widgets (e.g., `RouteLinkButton`)
+- 🧭 Route observers (`on_change()`)
 - 🎨 Theming-aware transitions
 
 ---
 
 ## 📦 Installation
-
-Install TkRouter from PyPI:
 
 ```bash
 pip install tkrouter
@@ -80,15 +79,125 @@ from tkrouter.transitions import slide_transition, simple_fade_transition
 
 ---
 
-## 📂 Example Project Structure
+## 🔣 Route Parameters
 
-This is what an end-user project might look like when using TkRouter:
+Dynamic segments use angle brackets:
+
+```python
+ROUTES = {
+    "/user/<id>": UserProfilePage
+}
+```
+
+In your view:
+
+```python
+class UserProfilePage(tk.Frame):
+    def on_navigate(self, params):
+        user_id = params.get("id")
+```
+
+---
+
+## ❓ Query Parameters
+
+Query parameters are parsed automatically and merged with route parameters.
+
+```python
+/search?term=tkrouter&page=2
+```
+
+```python
+class SearchPage(tk.Frame):
+    def on_navigate(self, params):
+        term = params.get("term")
+        page = params.get("page")
+```
+
+---
+
+## 🌲 Nested Routing
+
+TkRouter supports nested routes via the `children` property.
+
+```python
+ROUTES = {
+    "/settings": {
+        "view": SettingsPage,
+        "children": {
+            "/profile": ProfilePage,
+            "/account": AccountPage
+        }
+    }
+}
+```
+
+In your view:
+
+```python
+self.child_view = ChildRouteView(self, master.router, "/settings")
+self.child_view.pack(fill="both", expand=True)
+```
+
+---
+
+
+## 🔗 Navigation Widgets
+
+TkRouter includes reusable helpers and widgets to simplify routing in your app.
+
+### `RouteLinkButton`
+
+```python
+RouteLinkButton(self, router, "/about", text="Go to About")
+```
+
+### `with_route()` - Decorator for Commands
+
+```python
+@with_route("/login")
+def go_to_login():
+    ...
+```
+
+Attach this to any `command=` on a button:
+
+```python
+btn = tk.Button(self, text="Login", command=with_route("/login"))
+```
+
+### `bind_route()` - Attach to Events
+
+```python
+label = tk.Label(self, text="Click to go to Home")
+bind_route(label, "/")
+```
+
+This allows any widget to act as a navigation trigger.
+
+
+## 🧭 Route Observers
+
+Track route changes in real-time:
+
+```python
+router.on_change(lambda path, params: print("Navigated to:", path, params))
+```
+
+Useful for:
+- Analytics and logging
+- Window title updates
+- State syncing
+
+---
+
+## 📂 Example Project Structure
 
 ```
 examples/
-├── views.py             # Page components (HomePage, AboutPage, etc.)
-├── route_config.py      # All route declarations
-└── basic_app.py         # Main application entry point
+├── views.py             # Page components
+├── route_config.py      # Routes definition
+└── basic_app.py         # App entry point
 ```
 
 ---
@@ -98,7 +207,6 @@ examples/
 ```bash
 pytest tests/
 ```
-
 
 ---
 
@@ -110,10 +218,11 @@ cd tkrouter/examples
 python basic_app.py
 ```
 
+---
+
 ## 📄 License
 
 MIT License
-
 
 ---
 
@@ -130,93 +239,3 @@ MIT License
 | Home Page         | About Page        | 404 Fallback       |
 |-------------------|-------------------|--------------------|
 | ![Home](docs/home.png) | ![About](docs/about.png) | ![404](docs/404.png) |
-
-
-## 🌲 Nested Routing
-
-TkRouter supports nested routes via the `children` property.
-
-Use `ChildRouteView` in your parent view to render the active child:
-
-```python
-ROUTES = {
-    "/settings": {
-        "view": SettingsPage,
-        "children": {
-            "/profile": {
-                "view": ProfilePage,
-                "children": {
-                    "/details": ProfileDetailsPage
-                }
-            },
-            "/account": AccountPage
-        }
-    }
-}
-```
-
-In `SettingsPage`:
-
-```python
-self.child_view = ChildRouteView(self, master.router, "/settings")
-self.child_view.pack(fill="both", expand=True)
-```
-
-In `ProfilePage` (to render `/settings/profile/details`):
-
-```python
-self.child_view = ChildRouteView(self, master.router, "/settings/profile")
-self.child_view.pack(fill="both", expand=True)
-```
-
-
-## 🔣 Route Parameters
-
-TkRouter supports dynamic route segments using angle brackets:
-
-```python
-ROUTES = {
-    "/user/<id>": UserProfilePage
-}
-```
-
-In your view, define an `on_navigate()` method to access parameters:
-
-```python
-class UserProfilePage(tk.Frame):
-    def __init__(self, master):
-        super().__init__(master)
-        self.label = tk.Label(self)
-        self.label.pack()
-
-    def on_navigate(self, params):
-        user_id = params.get("id", "unknown")
-        self.label.config(text=f"User ID: {user_id}")
-```
-
-## ❓ Query Parameters
-
-TkRouter supports parsing query parameters (e.g., `?key=value`) from the URL path.
-
-```python
-ROUTES = {
-    "/search": SearchPage
-}
-```
-
-Navigate to:
-
-```python
-/search?term=tkrouter&page=2
-```
-
-In your view:
-
-```python
-class SearchPage(tk.Frame):
-    def on_navigate(self, params):
-        term = params.get("term")  # "tkrouter"
-        page = params.get("page")  # "2"
-```
-
-Query params are merged with route parameters and passed into `on_navigate(params)` automatically.

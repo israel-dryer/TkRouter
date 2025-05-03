@@ -9,6 +9,7 @@ class Router:
         self.outlet = outlet
         self.transition_handler = transition_handler
         self.history = History()
+        self._listeners = []
 
     def navigate(self, path, transition=None):
         url, _, query = path.partition("?")
@@ -36,6 +37,7 @@ class Router:
             else:
                 self.outlet.set_view(view_class, params)
             self.history.push(path + ("?" + query if query else ""))
+            self._notify_listeners(path, params)
         except Exception as e:
             print(f"[TkRouter] Error navigating to '{path}': {e}")
 
@@ -84,3 +86,14 @@ class Router:
             return None, {}, None, None
 
         return search(self.routes)
+
+    def on_change(self, callback):
+        """Register a listener for route changes."""
+        self._listeners.append(callback)
+
+    def _notify_listeners(self, path, params):
+        for callback in self._listeners:
+            try:
+                callback(path, params)
+            except Exception as e:
+                print(f"[TkRouter] Route observer error: {e}")

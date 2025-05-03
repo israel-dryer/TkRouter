@@ -10,7 +10,11 @@ outlet = RouteView(root)
 outlet.pack(fill="both", expand=True)
 
 router = Router(routes=ROUTES, outlet=outlet)
+
+router.on_change(lambda path, params: print(f"[Observer] Navigated to {path} with params {params}"))
+
 outlet.router = router
+
 router.navigate("/")  # Shows the HomePage
 
 root.mainloop()
