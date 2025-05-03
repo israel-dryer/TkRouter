@@ -27,15 +27,6 @@
 
 `pip install tkrouter`
 
-For now, clone the repo:
-
-```bash
-git clone https://github.com/israel-dryer/tkrouter.git
-cd TkRouter
-```
-
----
-
 ## 📚 Requirements
 
 - Python 3.7+
