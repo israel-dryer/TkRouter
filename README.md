@@ -2,8 +2,10 @@
 
 A declarative routing system for building multi-page **Tkinter** applications with transitions, parameters, guards, and navigation history.
 
-![PyPI](https://img.shields.io/pypi/v/tkrouter) ![License](https://img.shields.io/github/license/israel-dryer/tkrouter)
+[Full documentation](https://tkrouter.readthedocs.io)
 
+[![PyPI](https://img.shields.io/pypi/v/tkrouter)](https://pypi.org/project/tkrouter/)
+[![License](https://img.shields.io/github/license/israel-dryer/tkrouter)](https://github.com/israel-dryer/tkrouter/blob/main/LICENSE)
 ---
 
 ## ✨ Features
