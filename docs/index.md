@@ -28,7 +28,21 @@ pip install tkrouter
 
 ---
 
-## 🚀 Quickstart
+## Quickstart
+
+You can start a new Tkinter router-based app in two ways:
+
+### 🚀 Option 1: Use the CLI
+
+```bash
+tkrouter-create
+```
+
+This generates a ready-to-run `main.py` file with a minimal working app.
+
+---
+
+### 🧪 Option 2: Use this snippet
 
 ```python
 from tkinter import Tk
