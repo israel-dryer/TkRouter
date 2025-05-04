@@ -1,0 +1,10 @@
+site_name: TkRouter
+repo_url: https://github.com/israel-dryer/tkrouter
+theme:
+  name: readthedocs
+  palette:
+    primary: blue
+    accent: indigo
+nav:
+  - Home: index.md
+  - API Reference: api.md

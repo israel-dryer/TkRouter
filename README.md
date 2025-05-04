@@ -1,6 +1,6 @@
 # TkRouter
 
-A declarative routing system for building multi-page **Tkinter** applications with transitions, parameters, guards, and history navigation.
+A declarative routing system for building multi-page **Tkinter** applications with transitions, parameters, guards, and navigation history.
 
 ![PyPI](https://img.shields.io/pypi/v/tkrouter) ![License](https://img.shields.io/github/license/israel-dryer/tkrouter)
 
@@ -8,14 +8,15 @@ A declarative routing system for building multi-page **Tkinter** applications wi
 
 ## ✨ Features
 
-- 🔀 **Route matching** with support for parameters (e.g., `/users/<id>`)
-- ❓ **Query string parsing** (e.g., `/logs?level=info`)
-- 🔄 **Animated transitions** (`slide`, `fade`) between views
-- 🧱 **Singleton router API** with `create_router()` and `get_router()`
-- 🔒 **Route guards** with optional redirect fallback
-- 🧭 **History stack** with `.back()`, `.forward()`, `.go()`
-- 🧩 **Routed widgets** like `RouteLinkButton`, `RouteLinkLabel`
-- 🎨 Works with both `tk.Frame` and `ttk.Frame` subclasses
+* 🔀 Route matching with parameters (e.g., `/users/<id>`)
+* ❓ Query string parsing (e.g., `/logs?level=info`)
+* 🔄 Animated transitions (slide, fade)
+* 🔒 Route guards with optional redirects
+* 🧱 Singleton router via `create_router()` / `get_router()`
+* 🧭 Navigation history: `.back()`, `.forward()`, `.go()`
+* 📢 Route observers with `on_change()`
+* 🧩 Routed widgets: `RouteLinkButton`, `RouteLinkLabel`
+* 🎨 Works with `tk.Frame` or `ttk.Frame`
 
 ---
 
@@ -27,9 +28,21 @@ pip install tkrouter
 
 ---
 
-## 🧭 Quickstart
+## 🚀 CLI Utilities
 
-Use the `tkrouter-create` command in your terminal to stand up a minimal starting app, or use the snippet below:
+After installation, these command-line scripts become available:
+
+```bash
+tkrouter-create           # Generate a minimal main.py scaffold
+tkrouter-demo-minimal     # Basic home/about demo
+tkrouter-demo-admin       # Sidebar layout with query parameters
+tkrouter-demo-unified     # Flat nested routes with transitions
+tkrouter-demo-guarded     # Route guards with simulated login
+```
+
+---
+
+## 🧭 Quickstart
 
 ```python
 from tkinter import Tk
@@ -61,9 +74,7 @@ root.mainloop()
 
 ---
 
-## 🧪 Examples
-
-Run any of these from the project root using Python's module runner:
+## 🧪 Example Demos
 
 ```bash
 python -m tkrouter.examples.minimal_app
@@ -72,93 +83,76 @@ python -m tkrouter.examples.unified_routing
 python -m tkrouter.examples.guarded_routes
 ```
 
-| File              | Description                                                         |
-| ----------------- | ------------------------------------------------------------------- |
-| `minimal_app`     | A basic home/about router demo                                      |
-| `admin_console`   | Sidebar layout with dynamic routes and query params                 |
-| `unified_routing` | Flat path routing (`/dashboard/stats`) with transitions             |
-| `guarded_routes`  | Simulated login with protected `/secret` view and redirect fallback |
+| Example           | Description                                                          |
+| ----------------- | -------------------------------------------------------------------- |
+| `minimal_app`     | Basic Home/About router demo                                         |
+| `admin_console`   | Sidebar UI with dynamic **routes** and **query parameters**          |
+| `unified_routing` | Flat-style routing (e.g., `/dashboard/stats`) with slide transitions |
+| `guarded_routes`  | Route guard demo with simulated login and redirect fallback          |
 
 ---
 
 ## 📚 API Overview
 
-### Routing
+### Router Lifecycle
 
 ```python
 create_router(routes: dict, outlet: RouterOutlet, transition_handler=None)
 get_router() -> Router
 ```
 
-### Route Configs
+### Route Config Format
 
 ```python
 {
   "/users/<id>": {
-    "view": UserDetailsPage,
-    "guard": is_authenticated,     # optional
-    "redirect": "/login",          # optional
-    "transition": slide_transition # optional
+    "view": UserDetailPage,
+    "guard": is_logged_in,
+    "redirect": "/login",
+    "transition": slide_transition
   }
 }
 ```
 
-### Widgets
+* Supports **dynamic route parameters** using angle brackets (e.g., `<id>`)
+* Supports **query parameters** appended to URLs (e.g., `?tab=settings`)
 
-- `RouteLinkButton(master, to: str, params: dict = None, **kwargs)`
-- `RouteLinkLabel(master, to: str, params: dict = None, **kwargs)`
-- `bind_route(widget, path, params)`
-- `with_route(path, params)(func)` – decorator for route-bound handlers
-
----
-
-## 🔄 Transitions
-
-Available transitions:
+### Transitions
 
 ```python
 from tkrouter.transitions import slide_transition, simple_fade_transition
 ```
 
-You can also define your own with the signature:
+Set globally or per route config.
+
+### Routed Widgets
+
+* `RouteLinkButton(master, to, params=None, **kwargs)`
+* `RouteLinkLabel(master, to, params=None, **kwargs)`
+* `bind_route(widget, path, params=None)`
+* `@with_route(path, params)` — for command binding
+
+### Observing Route Changes
 
 ```python
-def my_transition(outlet, view_class, params, duration=300): ...
+get_router().on_change(lambda path, params: print("Route changed:", path, params))
 ```
 
 ---
 
 ## ⚠️ Exceptions
 
-```python
-from tkrouter.exceptions import RouteNotFoundError, NavigationGuardError
-```
+* `RouteNotFoundError` – Raised when no matching route is found
+* `NavigationGuardError` – Raised when guard blocks navigation
 
 ---
 
-## ✅ Supported Python Versions
+## ✅ Compatibility
 
-- Python 3.8+
-
----
-
-## 🚀 CLI Scripts
-
-Once installed from PyPI, these scripts will be available in your terminal:
-
-```bash
-tkrouter-create           # Generate a minimal main.py app scaffold
-tkrouter-demo-minimal     # Minimal Home/About app
-tkrouter-demo-admin       # Full sidebar admin layout with query params
-tkrouter-demo-unified     # Unified flat routes with transitions
-tkrouter-demo-guarded     # Route guard with simulated login
-```
+* Python 3.8 and newer
 
 ---
 
 ## 📄 License
 
-MIT © Israel Dryer  
-[github.com/israel-dryer/tkrouter](https://github.com/israel-dryer/tkrouter)
-
----
+MIT License © [Israel Dryer](https://github.com/israel-dryer/tkrouter)
