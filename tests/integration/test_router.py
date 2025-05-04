@@ -13,7 +13,7 @@ except tk.TclError:
 import pytest
 from unittest.mock import Mock
 from tkrouter.router import Router
-from tkrouter.route_view import RouteView
+from tkrouter.router_outlet import RouterOutlet
 import tkinter as tk
 
 class DummyPage(tk.Frame):
@@ -22,7 +22,7 @@ class DummyPage(tk.Frame):
 
 def test_navigate_sets_view_and_history():
     root = tk.Tk()
-    outlet = RouteView(root)
+    outlet = RouterOutlet(root)
     routes = {"/": DummyPage}
     router = Router(routes=routes, outlet=outlet)
     router.navigate("/")
@@ -32,7 +32,7 @@ def test_navigate_sets_view_and_history():
 
 def test_guard_redirect():
     root = tk.Tk()
-    outlet = RouteView(root)
+    outlet = RouterOutlet(root)
     routes = {
         "/secure": {"view": DummyPage, "guard": lambda: False, "redirect": "/"},
         "/": DummyPage
@@ -44,7 +44,7 @@ def test_guard_redirect():
 
 def test_route_not_found():
     root = tk.Tk()
-    outlet = RouteView(root)
+    outlet = RouterOutlet(root)
     routes = {"/": DummyPage}
     router = Router(routes=routes, outlet=outlet)
     with pytest.raises(RouteNotFoundError):

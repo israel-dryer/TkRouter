@@ -1,26 +1,21 @@
-> 🚧 **This project is in active development. Expect frequent changes and breaking updates.**
->
 # TkRouter
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/)
-[![PyPI](https://img.shields.io/pypi/v/tkrouter.svg)](https://pypi.org/project/tkrouter/)
+A declarative routing system for building multi-page **Tkinter** applications with transitions, parameters, guards, and history navigation.
 
-**TkRouter** brings declarative, animated routing to Tkinter, inspired by React Router and Angular Router.
+![PyPI](https://img.shields.io/pypi/v/tkrouter) ![License](https://img.shields.io/github/license/israel-dryer/tkrouter)
 
 ---
 
 ## ✨ Features
 
-- ✅ Simple route definitions with path-to-view mapping
-- 🔁 Supports route transitions (slide, fade, etc.)
-- 🛡️ Route guards and redirection
-- 📦 Nested routes and 404 fallback handling
-- 📜 URL and query parameter parsing (`/user/<id>?sort=asc`)
-- 🧠 History stack (back/forward navigation)
-- 🔗 Reusable navigation widgets (e.g., `RouteLinkButton`)
-- 🧭 Route observers (`on_change()`)
-- 🎨 Theming-aware transitions
+- 🔀 **Route matching** with support for parameters (e.g., `/users/<id>`)
+- ❓ **Query string parsing** (e.g., `/logs?level=info`)
+- 🔄 **Animated transitions** (`slide`, `fade`) between views
+- 🧱 **Singleton router API** with `create_router()` and `get_router()`
+- 🔒 **Route guards** with optional redirect fallback
+- 🧭 **History stack** with `.back()`, `.forward()`, `.go()`
+- 🧩 **Routed widgets** like `RouteLinkButton`, `RouteLinkLabel`
+- 🎨 Works with both `tk.Frame` and `ttk.Frame` subclasses
 
 ---
 
@@ -32,210 +27,138 @@ pip install tkrouter
 
 ---
 
-## 📚 Requirements
+## 🧭 Quickstart
 
-- Python 3.7+
-- Tkinter (built-in on most systems)
-
----
-
-## 🚀 Quick Start
+Use the `tkrouter-create` command in your terminal to stand up a minimal starting app, or use the snippet below:
 
 ```python
-from tkrouter.router import Router
-from tkrouter.route_view import RouteView
-from examples.route_config import ROUTES
+from tkinter import Tk
+from tkrouter import create_router, get_router, RouterOutlet
+from tkrouter.views import RoutedView
+from tkrouter.widgets import RouteLinkButton
 
-root = tk.Tk()
-outlet = RouteView(root)
-router = Router(routes=ROUTES, outlet=outlet)
-router.navigate("/")  # Shows the HomePage
+class Home(RoutedView):
+    def __init__(self, master):
+        super().__init__(master)
+        RouteLinkButton(self, "/about", text="Go to About").pack()
+
+class About(RoutedView):
+    def __init__(self, master):
+        super().__init__(master)
+        RouteLinkButton(self, "/", text="Back to Home").pack()
+
+ROUTES = {
+    "/": Home,
+    "/about": About,
+}
+
+root = Tk()
+outlet = RouterOutlet(root)
+outlet.pack(fill="both", expand=True)
+create_router(ROUTES, outlet).navigate("/")
+root.mainloop()
 ```
 
 ---
 
-## 📁 Route Configuration
+## 🧪 Examples
+
+Run any of these from the project root using Python's module runner:
+
+```bash
+python -m tkrouter.examples.minimal_app
+python -m tkrouter.examples.admin_console
+python -m tkrouter.examples.unified_routing
+python -m tkrouter.examples.guarded_routes
+```
+
+| File              | Description                                                         |
+| ----------------- | ------------------------------------------------------------------- |
+| `minimal_app`     | A basic home/about router demo                                      |
+| `admin_console`   | Sidebar layout with dynamic routes and query params                 |
+| `unified_routing` | Flat path routing (`/dashboard/stats`) with transitions             |
+| `guarded_routes`  | Simulated login with protected `/secret` view and redirect fallback |
+
+---
+
+## 📚 API Overview
+
+### Routing
 
 ```python
-ROUTES = {
-    "/": HomePage,
-    "/about": {
-        "view": AboutPage,
-        "transition": slide_transition
-    },
-    "*": NotFoundPage
+create_router(routes: dict, outlet: RouterOutlet, transition_handler=None)
+get_router() -> Router
+```
+
+### Route Configs
+
+```python
+{
+  "/users/<id>": {
+    "view": UserDetailsPage,
+    "guard": is_authenticated,     # optional
+    "redirect": "/login",          # optional
+    "transition": slide_transition # optional
+  }
 }
 ```
 
+### Widgets
+
+- `RouteLinkButton(master, to: str, params: dict = None, **kwargs)`
+- `RouteLinkLabel(master, to: str, params: dict = None, **kwargs)`
+- `bind_route(widget, path, params)`
+- `with_route(path, params)(func)` – decorator for route-bound handlers
+
 ---
 
-## 🔧 Transitions
+## 🔄 Transitions
 
-Use built-in transitions or create your own:
+Available transitions:
 
 ```python
 from tkrouter.transitions import slide_transition, simple_fade_transition
 ```
 
----
-
-## 🔣 Route Parameters
-
-Dynamic segments use angle brackets:
+You can also define your own with the signature:
 
 ```python
-ROUTES = {
-    "/user/<id>": UserProfilePage
-}
-```
-
-In your view:
-
-```python
-class UserProfilePage(tk.Frame):
-    def on_navigate(self, params):
-        user_id = params.get("id")
+def my_transition(outlet, view_class, params, duration=300): ...
 ```
 
 ---
 
-## ❓ Query Parameters
-
-Query parameters are parsed automatically and merged with route parameters.
+## ⚠️ Exceptions
 
 ```python
-/search?term=tkrouter&page=2
-```
-
-```python
-class SearchPage(tk.Frame):
-    def on_navigate(self, params):
-        term = params.get("term")
-        page = params.get("page")
+from tkrouter.exceptions import RouteNotFoundError, NavigationGuardError
 ```
 
 ---
 
-## 🌲 Nested Routing
+## ✅ Supported Python Versions
 
-TkRouter supports nested routes via the `children` property.
-
-```python
-ROUTES = {
-    "/settings": {
-        "view": SettingsPage,
-        "children": {
-            "/profile": ProfilePage,
-            "/account": AccountPage
-        }
-    }
-}
-```
-
-In your view:
-
-```python
-self.child_view = ChildRouteView(self, master.router, "/settings")
-self.child_view.pack(fill="both", expand=True)
-```
+- Python 3.8+
 
 ---
 
-## 🔗 Navigation Widgets
+## 🚀 CLI Scripts
 
-TkRouter includes reusable helpers and widgets to simplify routing in your app.
-
-### `RouteLinkButton`
-
-```python
-RouteLinkButton(self, router, "/user/<id>", params={"id": 42}, text="Go to User 42")
-```
-
-### `with_route()` - Decorator or Inline Command
-
-Use as a decorator:
-
-```python
-@with_route(router, "/login")
-def login_handler():
-    ...
-```
-
-Or attach as a button command with dynamic params:
-
-```python
-tk.Button(self, text="Go", command=with_route(router, "/search", params={"term": "python"}))
-```
-
-### `bind_route()` - Attach to Any Widget
-
-```python
-label = tk.Label(self, text="Go to Home")
-bind_route(label, router, "/", params={"from": "label"})
-```
-
-This allows any widget to act as a navigation trigger with optional parameters.
-
-## 🧭 Route Observers
-
-Track route changes in real-time:
-
-```python
-router.on_change(lambda path, params: print("Navigated to:", path, params))
-```
-
-Useful for:
-- Analytics and logging
-- Window title updates
-- State syncing
-
----
-
-## 📂 Example Project Structure
-
-```
-examples/
-├── views.py             # Page components
-├── route_config.py      # Routes definition
-└── basic_app.py         # App entry point
-```
-
----
-
-## 🧪 Testing
+Once installed from PyPI, these scripts will be available in your terminal:
 
 ```bash
-pytest tests/
-```
-
----
-
-## 🧪 Try It Locally
-
-```bash
-git clone https://github.com/israel-dryer/tkrouter.git
-cd tkrouter/examples
-python basic_app.py
+tkrouter-create           # Generate a minimal main.py app scaffold
+tkrouter-demo-minimal     # Minimal Home/About app
+tkrouter-demo-admin       # Full sidebar admin layout with query params
+tkrouter-demo-unified     # Unified flat routes with transitions
+tkrouter-demo-guarded     # Route guard with simulated login
 ```
 
 ---
 
 ## 📄 License
 
-MIT License
+MIT © Israel Dryer  
+[github.com/israel-dryer/tkrouter](https://github.com/israel-dryer/tkrouter)
 
 ---
-
-## 🎥 Demo
-
-![TkRouter Demo](docs/demo.gif)
-
-> The above shows animated navigation between views using slide and fade transitions.
-
----
-
-## 🖼️ Screenshots
-
-| Home Page         | About Page        | 404 Fallback       |
-|-------------------|-------------------|--------------------|
-| ![Home](docs/home.png) | ![About](docs/about.png) | ![404](docs/404.png) |

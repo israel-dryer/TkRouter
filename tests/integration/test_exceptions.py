@@ -1,7 +1,7 @@
 import pytest
 import tkinter as tk
 from tkrouter.router import Router
-from tkrouter.route_view import RouteView
+from tkrouter.router_outlet import RouterOutlet
 from tkrouter.exceptions import RouteNotFoundError, NavigationGuardError
 
 class DummyPage(tk.Frame):
@@ -9,7 +9,7 @@ class DummyPage(tk.Frame):
 
 def test_route_not_found_exception():
     root = tk.Tk()
-    outlet = RouteView(root)
+    outlet = RouterOutlet(root)
     router = Router(routes={"/": DummyPage}, outlet=outlet)
 
     with pytest.raises(RouteNotFoundError):
@@ -18,7 +18,7 @@ def test_route_not_found_exception():
 
 def test_navigation_guard_exception():
     root = tk.Tk()
-    outlet = RouteView(root)
+    outlet = RouterOutlet(root)
     routes = {
         "/secure": {
             "view": DummyPage,

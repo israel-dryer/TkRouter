@@ -4,16 +4,19 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tkrouter"
-version = "0.1.1"
+version = "0.2.0"
 description = "Declarative routing and animated navigation for Tkinter."
 authors = [{ name = "Israel Dryer", email = "israel.dryer@gmail.com" }]
 license = "MIT"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 dependencies = []
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+
+[tool.setuptools]
+include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -22,3 +25,10 @@ where = ["src"]
 "Homepage" = "https://github.com/israel-dryer/tkrouter"
 "Source" = "https://github.com/israel-dryer/tkrouter"
 "Bug Tracker" = "https://github.com/israel-dryer/tkrouter/issues"
+
+[project.scripts]
+tkrouter-demo-minimal = "tkrouter.examples.minimal_app:run"
+tkrouter-demo-admin = "tkrouter.examples.admin_console:run"
+tkrouter-demo-unified = "tkrouter.examples.unified_routing:run"
+tkrouter-demo-guarded = "tkrouter.examples.guarded_routes:run"
+tkrouter-create = "tkrouter.create_app:create_main_py"
